@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Lectures.Api.Domain;
 using Lectures.Api.Infrastructure;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Lectures.Api.Controllers;
 
@@ -11,6 +12,7 @@ namespace Lectures.Api.Controllers;
 public class LecturesController(LecturesDbContext dbContext) : ControllerBase
 {
     [HttpPost]
+    [Authorize(Roles = "Teacher")]
     public async Task<IActionResult> CreateLecture(CreateLectureRequest request, CancellationToken cancellationToken)
     {
         var lecture = new Lecture
@@ -55,6 +57,7 @@ public class LecturesController(LecturesDbContext dbContext) : ControllerBase
 
 
     [HttpDelete("{id:guid}")]
+    [Authorize(Roles = "Teacher")]
     public async Task<IActionResult> DeleteLecture(Guid id, CancellationToken cancellationToken)
     {
         var lecture = await dbContext.Lectures.FindAsync([id], cancellationToken);
